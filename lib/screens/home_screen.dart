@@ -131,7 +131,7 @@ void _editItem(int index) {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: items.length,
-      itemBuilder: (context, index) => _itemTile(items[index]),
+      itemBuilder: (context, index) => _itemTile(items[index], index),
     );
   }
 
