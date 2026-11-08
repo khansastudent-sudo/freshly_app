@@ -26,6 +26,44 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
     if (item != null) setState(() => _items.add(item));
   }
+  void _deleteItem(int index) {
+  setState(() {
+    _items.removeAt(index);
+  });
+}
+
+void _editItem(int index) {
+  final item = _items[index];
+  final TextEditingController controller = TextEditingController(text: item['name']);
+
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Edit Item'),
+      content: TextField(
+        controller: controller,
+        decoration: const InputDecoration(labelText: 'Item name'),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            if (controller.text.trim().isNotEmpty) {
+              setState(() {
+                _items[index]['name'] = controller.text.trim();
+              });
+            }
+            Navigator.pop(context);
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    ),
+  );
+}
 
   void _openItem(Map<String, dynamic> item) {
     Navigator.push<void>(
@@ -45,27 +83,42 @@ class _HomeScreenState extends State<HomeScreen> {
     final today = DateUtils.dateOnly(DateTime.now());
     return DateUtils.dateOnly(expiry).difference(today).inDays;
   }
-  Widget _itemTile(Map<String, dynamic> item) {
-    final days = _daysLeft(item);
-return Card(
-  color: const Color(0xFFFFE8DA),
-  elevation: 3,
-  shadowColor: const Color(0x33D9A7A0),
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(18),
-  ),
-  child: ListTile(
-
-        leading: const Icon(Icons.shopping_basket, color: Color(0xFF628C55)),
-        title: Text(item['name'] as String),
-        subtitle: Text(days < 0 ? 'Expired ${-days} days ago'
-            : days == 0 ? 'Expires today'
-            : 'Expires in $days days'),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () => _openItem(item),
+  Widget _itemTile(Map<String, dynamic> item, int index) {
+  final days = _daysLeft(item);
+  return Card(
+    color: const Color(0xFFFFE8DA),
+    elevation: 3,
+    shadowColor: const Color(0x33D9A7A0),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(18),
+    ),
+    child: ListTile(
+      leading: const Icon(Icons.shopping_basket, color: Color(0xFF628C55)),
+      title: Text(item['name'] as String),
+      subtitle: Text(days < 0
+          ? 'Expired ${-days} days ago'
+          : days == 0
+              ? 'Expires today'
+              : 'Expires in $days days'),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // EDIT button
+          IconButton(
+            icon: const Icon(Icons.edit, color: Colors.blue),
+            onPressed: () => _editItem(index),
+          ),
+          // DELETE button
+          IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: () => _deleteItem(index),
+          ),
+        ],
       ),
-    );
-  }
+      onTap: () => _openItem(item),
+    ),
+  );
+}
 
   Widget _itemList(List<Map<String, dynamic>> items) {
     if (items.isEmpty) {
