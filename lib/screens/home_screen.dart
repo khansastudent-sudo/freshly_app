@@ -27,11 +27,35 @@ class _HomeScreenState extends State<HomeScreen> {
     if (item != null) setState(() => _items.add(item));
   }
   void _deleteItem(int index) {
-  setState(() {
-    _items.removeAt(index);
-  });
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Delete Item?'),
+      content: Text(
+        'Are you sure you want to delete ${_items[index]['name']}?',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _items.removeAt(index);
+            });
+            Navigator.pop(context);
+          },
+          child: const Text(
+            'Delete',
+            style: TextStyle(color: Colors.red),
+          ),
+        ),
+      ],
+    ),
+  );
 }
-
+  
 void _editItem(int index) {
   final item = _items[index];
   final TextEditingController controller = TextEditingController(text: item['name']);
