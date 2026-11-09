@@ -13,15 +13,21 @@ class FreshlyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF91B97F)),
+        
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF91B97F),
+          background: const Color(0xFFFFFCE9), 
+        ),
         scaffoldBackgroundColor: const Color(0xFFFFFCE9),
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFFFFF4B9),
           foregroundColor: Color(0xFF355D42),
           centerTitle: true,
+          elevation: 0, 
         ),
       ),
       home: const HomeScreen(),
     );
   }
 }
+
